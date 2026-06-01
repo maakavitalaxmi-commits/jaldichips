@@ -341,17 +341,17 @@ const normalizeB2BImage = (imagePath) => {
 
 const normalizeCategoryKey = (value) => {
   const raw = String(value || "").trim().toLowerCase();
-  if (!raw) return "spicy-namkeen";
+  if (!raw) return "banana-food-products";
 
-  if (raw.includes("spicy") || raw.includes("namkeen")) return "spicy-namkeen";
-  if (raw.includes("halka") || raw.includes("snack")) return "halka-fulka-snacks";
+  if (raw.includes("spicy") || raw.includes("namkeen")) return "banana-food-products";
+  if (raw.includes("halka") || raw.includes("snack")) return "banana-chips";
   return raw.replace(/\s+/g, "-");
 };
 
 const getCategoryLabel = (value) => {
   const key = normalizeCategoryKey(value);
-  if (key === "spicy-namkeen") return "Spicy Namkeen";
-  if (key === "halka-fulka-snacks") return "Halka Fulka Snacks";
+  if (key === "banana-food-products") return "Banana Food Products";
+  if (key === "banana-chips") return "Banana Chips";
   return String(value || "Other Category")
     .trim()
     .replace(/\b\w/g, (ch) => ch.toUpperCase());
@@ -364,7 +364,7 @@ const mapB2BProduct = (product, idx) => ({
   image: normalizeB2BImage(product.image),
   weight: product.weight || "100 g",
   showOnPage: product.showOnPage || "home",
-  category: product.category || "Spicy Namkeen",
+  category: product.category || "Banana Food Products",
   categoryKey: normalizeCategoryKey(product.category),
   categoryLabel: getCategoryLabel(product.category),
   minQty: 10,
@@ -383,12 +383,12 @@ export default function BusinessToBusiness({ products = [] }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const fallbackProducts = [
-    { id:"c1", title:"Classic Banana Chips", price:220, image:bananaChips, weight:"100 g", minQty:10, category:"Spicy Namkeen", categoryKey:"spicy-namkeen", categoryLabel:"Spicy Namkeen", details:{ brand:"jaldichips", weight:"100 g", shelfLife:"4 Months", origin:"Made in India", ingredients:"G9 Banana + Rice Oil + flavour - salty", vegetarian:"Yes" } },
-    { id:"c2", title:"Banana Powder", price:220, image:bananaPowder, weight:"1 kg", minQty:10, category:"Spicy Namkeen", categoryKey:"spicy-namkeen", categoryLabel:"Spicy Namkeen", details:{ brand:"jaldichips", weight:"1 kg", shelfLife:"4 Months", origin:"Made in India", ingredients:"G9 Banana + Rice Oil + flavour - salty", vegetarian:"Yes" } },
-    { id:"c3", title:"Banana Length Pepper", price:220, image:bananach5, weight:"250 g", minQty:10, category:"Spicy Namkeen", categoryKey:"spicy-namkeen", categoryLabel:"Spicy Namkeen", details:{ brand:"jaldichips", weight:"250 g", shelfLife:"4 Months", origin:"Made in India", ingredients:"G9 Banana + Rice Oil + flavour - salty", vegetarian:"Yes" } },
-    { id:"c4", title:"Banana Salti Chips", price:230, image:bananaSalti, weight:"100 g", minQty:10, category:"Halka Fulka Snacks", categoryKey:"halka-fulka-snacks", categoryLabel:"Halka Fulka Snacks", details:{ brand:"jaldichips", weight:"100 g", shelfLife:"4 Months", origin:"Made in India", ingredients:"G9 Banana + Rice Oil + flavour - salty", vegetarian:"Yes" } },
-    { id:"h1", title:"Spicy Banana Chips", price:100, image:bananaChilli, weight:"100 g", minQty:10, category:"Halka Fulka Snacks", categoryKey:"halka-fulka-snacks", categoryLabel:"Halka Fulka Snacks", details:{ brand:"jaldichips", weight:"100 g", shelfLife:"4 Months", origin:"Made in India", ingredients:"G9 Banana + Rice Oil + flavour - salty", vegetarian:"Yes" } },
-    { id:"h2", title:"Signature Banana Chips", price:200, image:chilliBana, weight:"5 pcs", minQty:10, category:"Halka Fulka Snacks", categoryKey:"halka-fulka-snacks", categoryLabel:"Halka Fulka Snacks", details:{ brand:"jaldichips", weight:"5 pcs", shelfLife:"4 Months", origin:"Made in India", ingredients:"G9 Banana + Rice Oil + flavour - salty", vegetarian:"Yes" } },
+    { id:"c1", title:"Classic Banana Chips", price:220, image:bananaChips, weight:"100 g", minQty:10, category:"Banana Food Products", categoryKey:"banana-food-products", categoryLabel:"Banana Food Products", details:{ brand:"jaldichips", weight:"100 g", shelfLife:"4 Months", origin:"Made in India", ingredients:"G9 Banana + Rice Oil + flavour - salty", vegetarian:"Yes" } },
+    { id:"c2", title:"Banana Powder", price:220, image:bananaPowder, weight:"1 kg", minQty:10, category:"Banana Food Products", categoryKey:"banana-food-products", categoryLabel:"Banana Food Products", details:{ brand:"jaldichips", weight:"1 kg", shelfLife:"4 Months", origin:"Made in India", ingredients:"G9 Banana + Rice Oil + flavour - salty", vegetarian:"Yes" } },
+    { id:"c3", title:"Banana Length Pepper", price:220, image:bananach5, weight:"250 g", minQty:10, category:"Banana Food Products", categoryKey:"banana-food-products", categoryLabel:"Banana Food Products", details:{ brand:"jaldichips", weight:"250 g", shelfLife:"4 Months", origin:"Made in India", ingredients:"G9 Banana + Rice Oil + flavour - salty", vegetarian:"Yes" } },
+    { id:"c4", title:"Banana Salti Chips", price:230, image:bananaSalti, weight:"100 g", minQty:10, category:"Banana Chips", categoryKey:"banana-chips", categoryLabel:"Banana Chips", details:{ brand:"jaldichips", weight:"100 g", shelfLife:"4 Months", origin:"Made in India", ingredients:"G9 Banana + Rice Oil + flavour - salty", vegetarian:"Yes" } },
+    { id:"h1", title:"Spicy Banana Chips", price:100, image:bananaChilli, weight:"100 g", minQty:10, category:"Banana Chips", categoryKey:"banana-chips", categoryLabel:"Banana Chips", details:{ brand:"jaldichips", weight:"100 g", shelfLife:"4 Months", origin:"Made in India", ingredients:"G9 Banana + Rice Oil + flavour - salty", vegetarian:"Yes" } },
+    { id:"h2", title:"Signature Banana Chips", price:200, image:chilliBana, weight:"5 pcs", minQty:10, category:"Banana Chips", categoryKey:"banana-chips", categoryLabel:"Banana Chips", details:{ brand:"jaldichips", weight:"5 pcs", shelfLife:"4 Months", origin:"Made in India", ingredients:"G9 Banana + Rice Oil + flavour - salty", vegetarian:"Yes" } },
   ];
 
   const b2bProducts = Array.isArray(products)
@@ -400,12 +400,12 @@ export default function BusinessToBusiness({ products = [] }) {
     : fallbackProducts;
 
   const heroProducts = liveProducts.slice(0, 2);
-  const spicyProducts = liveProducts.filter((p) => p.categoryKey === "spicy-namkeen");
-  const snacksProducts = liveProducts.filter((p) => p.categoryKey === "halka-fulka-snacks");
+  const spicyProducts = liveProducts.filter((p) => p.categoryKey === "banana-food-products");
+  const snacksProducts = liveProducts.filter((p) => p.categoryKey === "banana-chips");
   const otherCategoryKeys = Array.from(
     new Set(
       liveProducts
-        .filter((p) => !["spicy-namkeen", "halka-fulka-snacks"].includes(p.categoryKey))
+        .filter((p) => !["banana-food-products", "banana-chips"].includes(p.categoryKey))
         .map((p) => p.categoryKey)
     )
   );
@@ -422,10 +422,20 @@ export default function BusinessToBusiness({ products = [] }) {
         previous.message ||
         `Interested in ${product.title}. Please share best wholesale pricing and dispatch timeline.`,
     }));
-    const formEl = document.getElementById("wholesale-form");
-    if (formEl) {
-      formEl.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+const formEl = document.getElementById("wholesale-form");
+
+if (formEl) {
+  const yOffset = -120; // adjust according to navbar height
+  const y =
+    formEl.getBoundingClientRect().top +
+    window.pageYOffset +
+    yOffset;
+
+  window.scrollTo({
+    top: y,
+    behavior: "smooth",
+  });
+}
   };
 
   const handleChange = (event) => {
@@ -547,7 +557,7 @@ export default function BusinessToBusiness({ products = [] }) {
             <h3 className="text-xl font-bold text-gray-900">Our Products</h3>
             <span className="text-xs font-black text-emerald-700 uppercase tracking-widest">Live Inventory</span>
           </div>
-          <h4 className="text-sm font-bold text-gray-900 mb-4">Spicy Namkeen</h4>
+          <h4 className="text-sm font-bold text-gray-900 mb-4">Banana Food Products</h4>
           <div className="grid md:grid-cols-4 gap-6">
             {spicyProductsToShow.map((p) => (
               <QuoteProductCard
@@ -559,7 +569,7 @@ export default function BusinessToBusiness({ products = [] }) {
             ))}
           </div>
           <div className="mt-10 flex items-center justify-between mb-4">
-            <h4 className="text-sm font-bold text-gray-900">Halka Fulka Snacks</h4>
+            <h4 className="text-sm font-bold text-gray-900">Banana Chips</h4>
             <span className="text-xs font-black text-gray-500 uppercase tracking-widest">Freshly Added</span>
           </div>
           <div className="grid md:grid-cols-4 gap-6">
@@ -707,7 +717,7 @@ export default function BusinessToBusiness({ products = [] }) {
                 />
               </div>
 
-              <div className="sm:col-span-2">
+              <div className="sm:col-span-1">
                 <label className="block text-xs font-semibold text-[#0b3b2a] mb-1.5">
                   Email Address
                 </label>
@@ -722,7 +732,7 @@ export default function BusinessToBusiness({ products = [] }) {
                 />
               </div>
 
-              <div className="sm:col-span-2">
+              <div className="sm:col-span-1">
                 <label className="block text-xs font-semibold text-[#0b3b2a] mb-1.5">
                   Required Quantity (Monthly)
                 </label>
@@ -783,6 +793,17 @@ export default function BusinessToBusiness({ products = [] }) {
                     className="block mt-1 text-sm font-medium text-[#0b3b2a]"
                   >
                     +91-8492995999
+                  </a>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-[#0b3b2a] uppercase tracking-[0.18em]">
+                    Call / WhatsApp
+                  </p>
+                  <a
+                    href="tel:+918492995999"
+                    className="block mt-1 text-sm font-medium text-[#0b3b2a]"
+                  >
+                    +91-7366981951
                   </a>
                 </div>
 

@@ -25,6 +25,10 @@ const mapLiveProduct = (product, index) => ({
   image: normalizeProductImage(product.image),
   quantity: product.weight || "100 g",
   likeCount: product.likeCount || 0,
+  brand: product.brand || "jaldichips",
+  ingredients: product.ingredients || "Banana, Oil, Salt",
+  description: product.description || "",
+  category: product.category || "Snacks",
 });
 
 const LandingPage = ({ products = [] }) => {
