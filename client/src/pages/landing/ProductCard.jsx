@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { ShoppingCart, Loader2 } from "lucide-react";
+import { ShoppingCart, Loader2, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import API from "../../config/api/apiconfig";
 
@@ -52,7 +52,15 @@ const ProductCard = ({ product, onOpen, origin }) => {
 
           <div className="flex items-baseline justify-between">
             <p className="text-lg font-bold text-gray-900">₹ {product.price}</p>
-            <span className="text-xs font-bold text-gray-800">{product.quantity}</span>
+            <div className="flex items-center gap-2">
+              {product.likeCount > 0 && (
+                <div className="flex items-center gap-1 text-gray-500">
+                  <Heart className="w-3.5 h-3.5 fill-gray-500" />
+                  <span className="text-xs font-semibold">{product.likeCount}</span>
+                </div>
+              )}
+              <span className="text-xs font-bold text-gray-800">{product.quantity}</span>
+            </div>
           </div>
 
           <button

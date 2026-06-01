@@ -24,6 +24,7 @@ const mapLiveProduct = (product, index) => ({
   price: String(product.price ?? "0"),
   image: normalizeProductImage(product.image),
   quantity: product.weight || "100 g",
+  likeCount: product.likeCount || 0,
 });
 
 const LandingPage = ({ products = [] }) => {

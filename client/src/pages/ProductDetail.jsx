@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { ShoppingBag, Heart, Star, Plus, Minus, Building2, CalendarDays, Users, CircleDollarSign, IdCard, FileText, Truck, ShieldCheck, ThumbsUp } from "lucide-react";
+import { ShoppingBag, Heart, Star, Plus, Minus, Building2, CalendarDays, Users, CircleDollarSign, IdCard, FileText, Truck, ShieldCheck, ThumbsUp, Share2, Loader2 } from "lucide-react";
 import API from "../config/api/apiconfig";
 import { submitQuote } from "../utils/orderApi";
 import { submitContactEnquiry } from "../utils/contactApi";
+import { trackView, trackShare, toggleLike, getLikeStatus } from "../config/api/analyticsApi";
 
 // Assets
 import bananaChilli from "../assets/banana/bananaChilli.jpeg";
@@ -19,10 +20,79 @@ export default function ProductDetail() {
   const location = useLocation();
   const [loadingId, setLoadingId] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [favorites, setFavorites] = useState({});
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [showQuoteModal, setShowQuoteModal] = useState(false);
   const [quoteForm, setQuoteForm] = useState({ name: "", mobile: "", email: "", message: "" });
+  const [productData, setProductData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setLoading(true);
+        // Track view
+        trackView(id);
+
+        const { data } = await API.get(`/products`);
+        // Find the specific product from the list (since there might not be a single product GET endpoint yet)
+        const products = Array.isArray(data) ? data : data.products || [];
+        const found = products.find(p => p._id === id);
+        
+        if (found) {
+          setProductData(found);
+          setLikeCount(found.likeCount || 0);
+        }
+
+        // Check like status if user is logged in
+        const token = localStorage.getItem("token");
+        if (token) {
+          const { data: likeData } = await getLikeStatus(id);
+          setIsLiked(likeData.isLiked);
+        }
+      } catch (error) {
+        console.error("Error fetching product details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id && id.length > 10) { // Check if it's a real MongoDB ID
+      fetchProduct();
+    } else {
+      setLoading(false);
+    }
+  }, [id]);
+
+  const handleLike = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/auth/sign-in");
+      return;
+    }
+
+    try {
+      const { data } = await toggleLike(id);
+      setIsLiked(data.isLiked);
+      setLikeCount(prev => data.isLiked ? prev + 1 : prev - 1);
+    } catch (error) {
+      console.error("Error toggling like:", error);
+    }
+  };
+
+  const handleShare = async (platform) => {
+    try {
+      await trackShare(id, platform);
+      // Implementation of actual sharing logic (e.g., navigator.share or opening a link)
+      if (platform === 'copy-link') {
+        navigator.clipboard.writeText(window.location.href);
+        alert("Link copied to clipboard!");
+      }
+    } catch (error) {
+      console.error("Error tracking share:", error);
+    }
+  };
 
   const products = [
     {
@@ -207,7 +277,21 @@ export default function ProductDetail() {
     },
   };
 
-  const detailProduct = id ? (detailMap[id] || {
+  const detailProduct = productData ? {
+    id: productData._id,
+    title: productData.name,
+    price: productData.price,
+    unit: productData.weight || "100 g",
+    image: normalizeProductImage(productData.image),
+    specs: {
+      brand: productData.brand || "jaldichips",
+      packagingSize: productData.weight || "100 g",
+      shelfLife: productData.shelfLife || "4 Months",
+      origin: "Made in India",
+      ingredients: productData.ingredients || "G9 Banana + Rice Oil + flavour",
+      vegetarian: "Yes",
+    },
+  } : (id ? (detailMap[id] || {
     title: id,
     price: 220,
     unit: "Kg",
@@ -220,7 +304,15 @@ export default function ProductDetail() {
       ingredients: "Maida, Ghee, Oil, Salt",
       vegetarian: "Yes",
     },
-  }) : null;
+  }) : null);
+
+  function normalizeProductImage(imagePath) {
+    if (!imagePath) return bananaChips;
+    if (/^https?:\/\//i.test(imagePath)) return imagePath;
+    const baseApi = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+    const origin = baseApi.replace(/\/api\/?$/, "");
+    return `${origin}${imagePath.startsWith("/") ? "" : "/"}${imagePath}`;
+  }
 
   const handleAction = async (product, redirectToCart = false) => {
     const token = localStorage.getItem("token");
@@ -267,6 +359,17 @@ export default function ProductDetail() {
     if (q) setSearchTerm(q);
   }, [location.search, id]);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F4F0E6] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-10 h-10 text-emerald-600 animate-spin" />
+          <p className="text-sm font-bold text-gray-500">Loading Product Details...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (detailProduct) {
     return (
       <div className="min-h-screen bg-[#F4F0E6] pt-28 pb-16">
@@ -287,7 +390,22 @@ export default function ProductDetail() {
             <div>
               <div className="flex items-center justify-between mb-3 pt-8">
                 <p className="text-xl font-black text-gray-900">₹ {detailProduct.price} / {detailProduct.unit}</p>
-                <button className="text-xs font-black text-green-700 underline">Get Latest Price</button>
+                <div className="flex items-center gap-4">
+                  <button 
+                    onClick={handleLike}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all ${isLiked ? 'bg-red-50 text-red-600' : 'bg-gray-50 text-gray-500 hover:bg-gray-100'}`}
+                  >
+                    <Heart className={`w-4 h-4 ${isLiked ? 'fill-red-600' : ''}`} />
+                    <span className="text-sm font-bold">{likeCount}</span>
+                  </button>
+                  <button 
+                    onClick={() => handleShare('copy-link')}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-50 text-gray-500 hover:bg-gray-100 transition-all"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    <span className="text-sm font-bold">Share</span>
+                  </button>
+                </div>
               </div>
               <div className="text-xs text-gray-700 space-y-4">
                 <p><span className="font-bold">Brand</span>: {detailProduct.specs.brand}</p>

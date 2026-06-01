@@ -58,6 +58,18 @@ const productSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    viewCount: {
+      type: Number,
+      default: 0,
+    },
+    likeCount: {
+      type: Number,
+      default: 0,
+    },
+    shareCount: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

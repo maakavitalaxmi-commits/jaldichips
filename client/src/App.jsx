@@ -30,6 +30,7 @@ import AddProduct from './modules/admin/AddProduct'
 import ManageProducts from './modules/admin/ManageProducts'
 import ContactEnquiriesPage from './modules/admin/ContactEnquiriesPage'
 import ContactUsEnquiriesPage from './modules/admin/ContactUsEnquiriesPage'
+import AnalyticsDashboard from './modules/admin/AnalyticsDashboard'
 
 const App = () => {
   const [products, setProducts] = useState([]);
@@ -89,6 +90,7 @@ const App = () => {
           <Route path="live-products" element={<ManageProducts products={products} refreshProducts={fetchProducts} />} />
           <Route path="contact-enquiries" element={<ContactEnquiriesPage />} />
           <Route path="contactus-enquiries" element={<ContactUsEnquiriesPage />} />
+          <Route path="analytics" element={<AnalyticsDashboard />} />
         </Route>
 
         {/* ================= PUBLIC SECTION (With Header/Footer) ================= */}

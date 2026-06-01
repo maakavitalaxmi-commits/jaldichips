@@ -12,12 +12,14 @@ import {
   FaChevronRight,
   FaEdit,
   FaEnvelope,
+  FaChartBar,
 } from "react-icons/fa";
 
 const AdminLayout = ({ onLogout }) => {
   const navigate = useNavigate();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(false);
+  const [userRole, setUserRole] = useState(localStorage.getItem('role') || 'admin');
 
   const menuItems = [
     { path: "/admin/dashboard", icon: <FaBoxOpen />, label: "Dashboard" },
@@ -26,6 +28,11 @@ const AdminLayout = ({ onLogout }) => {
     { path: "/admin/contact-enquiries", icon: <FaRegClock />, label: "Contact Enquiries" },
     { path: "/admin/contactus-enquiries", icon: <FaEnvelope />, label: "Contact Us Enquiries" },
   ];
+
+  // Add Analytics only for Super Admin
+  if (userRole === 'super-admin') {
+    menuItems.push({ path: "/admin/analytics", icon: <FaChartBar />, label: "Analytics" });
+  }
 
   const handleNavigateHome = () => {
     setIsMobileSidebarOpen(false);

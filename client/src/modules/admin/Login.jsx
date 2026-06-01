@@ -32,10 +32,11 @@ export default function Login({ onLogin }) {
         password,
       });
       console.log("LOGIN RESPONSE:", data);
-      if (data.user?.role === "admin") {
+      if (data.user?.role === "admin" || data.user?.role === "super-admin") {
         localStorage.setItem("token", data.token);
         localStorage.setItem("adminToken", data.token);
         localStorage.setItem("isAdmin", "true");
+        localStorage.setItem("role", data.user.role);
         onLogin();
         navigate("/admin/dashboard");
       } else {
